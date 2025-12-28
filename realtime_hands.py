@@ -66,7 +66,6 @@ def frames_to_feature(frames, stride=2):
                 has_last = True
                 seq.append(vec.reshape(-1))  # (126,)
             else:
-                # 손이 안 잡히는 프레임은 직전 정상값으로 채우기(없으면 0)
                 if has_last:
                     seq.append(last_vec.reshape(-1))
                 else:
@@ -134,7 +133,6 @@ def main():
             conf = float(np.max(model.predict_proba(feat)[0]))
             label = id_to_label.get(pred, "UNKNOWN")
 
-            # 원하면 임계값 추가 가능: conf < 0.70이면 UNKNOWN 처리
             last_text = f"{label} (conf={conf:.2f})"
             print("PRED:", pred, label, "conf", conf)
 
