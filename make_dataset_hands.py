@@ -17,7 +17,7 @@ def video_to_feature(path: str, max_frames=120, stride=2):
     seq = []
     detected = 0
 
-    last_vec = np.zeros((2, 21, 3), dtype=np.float32)  # 마지막 정상 손
+    last_vec = np.zeros((2, 21, 3), dtype=np.float32
     has_last = False
 
     with mp_hands.Hands(
@@ -50,7 +50,6 @@ def video_to_feature(path: str, max_frames=120, stride=2):
                         vec[h_idx, p_idx, 1] = lm.y
                         vec[h_idx, p_idx, 2] = lm.z
 
-                # ✅ 손목 기준 정규화(손이 있을 때만)
                 for h in range(2):
                     pts = vec[h]
                     if np.allclose(pts, 0):
@@ -66,22 +65,18 @@ def video_to_feature(path: str, max_frames=120, stride=2):
                 seq.append(vec.reshape(-1))
 
             else:
-                # ✅ 손이 안 잡힌 프레임은 0으로 넣지 말고 "직전 정상값"으로 채우기
                 if has_last:
                     seq.append(last_vec.reshape(-1))
                 else:
-                    # 시작부터 한 번도 안 잡힌 경우만 0으로
                     seq.append(vec.reshape(-1))
 
     cap.release()
-
-    # ✅ 감지가 0이면 그 영상은 학습에 도움이 거의 없으니 스킵
+    
     if detected == 0:
         raise RuntimeError(f"no hands detected: {path}")
 
     seq = np.stack(seq, axis=0)  # (T,126)
 
-    # 평균/표준편차 + (선택) 프레임 변화량 평균(동작 정보 약간 추가)
     d = np.diff(seq, axis=0)
     feat = np.concatenate([seq.mean(axis=0), seq.std(axis=0), d.mean(axis=0)], axis=0)
     return feat
