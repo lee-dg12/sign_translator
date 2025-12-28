@@ -1,0 +1,19 @@
+# venv
+.venv/
+venv/
+
+# python cache
+__pycache__/
+*.pyc
+
+# model / outputs
+artifacts/
+X.npy
+y.npy
+embeddings/
+temp_*
+*.log
+
+# OS junk
+.DS_Store
+Thumbs.db
