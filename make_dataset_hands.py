@@ -17,7 +17,7 @@ def video_to_feature(path: str, max_frames=120, stride=2):
     seq = []
     detected = 0
 
-    last_vec = np.zeros((2, 21, 3), dtype=np.float32
+    last_vec = np.zeros((2, 21, 3), dtype=np.float32)
     has_last = False
 
     with mp_hands.Hands(
